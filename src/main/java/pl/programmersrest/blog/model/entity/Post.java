@@ -32,7 +32,7 @@ public class Post {
     @Column(name = "imagine_path")
     private String imaginePath;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL,orphanRemoval = true)
     @JoinColumn(name = "post_id", referencedColumnName = "id")
     private List<Comment> commentList;
 
