@@ -32,7 +32,7 @@ public class UserCredentialsAuthenticationProvider implements AuthenticationProv
         if(passwordEncoder.matches(password, user.getPassword())){
             return new UsernamePasswordAuthenticationToken(username,password,user.getAuthorities());
         }
-        throw new BadCredentialsException("Bad credentials");
+        throw new BadCredentialsException("Password is incorrect");
     }
 
     @Override
