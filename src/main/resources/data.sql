@@ -6,11 +6,12 @@ DROP TABLE IF EXISTS tag cascade;
 
 CREATE TABLE user(
     id INT(6) AUTO_INCREMENT PRIMARY KEY,
-    login VARCHAR(20) NOT NULL UNIQUE,
-    password VARCHAR(50) NOT NULL,
+    username VARCHAR(20) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
     email VARCHAR(50) NOT NULL,
     join_date DATE NOT NULL,
     active boolean default true,
+    not_banned boolean default true,
     role VARCHAR(30) NOT NULL
 );
 CREATE TABLE post(
@@ -46,7 +47,7 @@ CREATE TABLE tag(
     post_id INT(6) NOT NULL,
     FOREIGN KEY (post_id) REFERENCES post(id)
 );
-INSERT INTO user(login, password, email, join_date, active, role) VALUES ( 'admin','admin','admin@admin.admin',CURRENT_DATE,TRUE,'ADMIN' );
+INSERT INTO user(username, password, email, join_date, active, role) VALUES ( 'admin','$2a$10$z7EinrtlpHpWZ1OlPgLnd.NRFFV81q6.Zm49UkVbFRAhGuyykyYTe','admin@admin.admin',CURRENT_DATE,TRUE,'ADMIN' );
 INSERT INTO post(title, short_description, full_description, create_date, author, imagine_path)
 VALUES ( 'title','t1','t2',CURRENT_DATE,'admin','path');
 INSERT INTO post(title, short_description, full_description, create_date, author, imagine_path)
