@@ -8,6 +8,7 @@ public final class TokenDetails {
     public final static int EXPIRED_AUTH_TOKEN = 900 * 1000;
     public final static int EXPIRED_REFRESH_TOKEN = 900 * 1000 * 2;
     public final static SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS256;
+    public final static String TOKEN_PREFIX = "Bearer ";
 
     private TokenDetails() {
     }

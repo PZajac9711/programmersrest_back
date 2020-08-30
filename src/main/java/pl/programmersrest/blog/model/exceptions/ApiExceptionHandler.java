@@ -2,6 +2,8 @@ package pl.programmersrest.blog.model.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import pl.programmersrest.blog.model.exceptions.custom.PostNotFoundException;
@@ -18,6 +20,16 @@ public class ApiExceptionHandler {
     @ExceptionHandler(TitleTakenException.class)
     public ResponseEntity<Object> handleTitleTakenException(TitleTakenException ex){
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST,ex,"Title need to bo unique");
+        return buildApiError(apiError);
+    }
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException ex){
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST,ex,"Bad credentials");
+        return buildApiError(apiError);
+    }
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<Object> handleUserNotFoundException(UsernameNotFoundException ex){
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST,ex,"User not found");
         return buildApiError(apiError);
     }
 

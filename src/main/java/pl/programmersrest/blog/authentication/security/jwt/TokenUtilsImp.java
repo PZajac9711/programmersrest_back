@@ -1,6 +1,7 @@
 package pl.programmersrest.blog.authentication.security.jwt;
 
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,15 @@ public class TokenUtilsImp implements TokenUtil{
     @Override
     public String generateRefreshToken(String username, String authority) {
         return generateToken(SECRET_REFRESH_TOKEN, username, authority, EXPIRED_REFRESH_TOKEN);
+    }
+
+    @Override
+    public Claims getClaimsFromToken(String token, String secret) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(secret)
+                .parseClaimsJws(token)
+                .getBody();
+        return claims;
     }
 
     private String generateToken(String secret, String username, String authority, int expiredTime){
