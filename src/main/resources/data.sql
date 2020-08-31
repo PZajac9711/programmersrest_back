@@ -52,6 +52,7 @@ CREATE TABLE tag(
     FOREIGN KEY (post_id) REFERENCES post(id)
 );
 INSERT INTO user(username, password, email, join_date, active, role) VALUES ( 'admin','$2a$10$z7EinrtlpHpWZ1OlPgLnd.NRFFV81q6.Zm49UkVbFRAhGuyykyYTe','admin@admin.admin',CURRENT_DATE,TRUE,'ADMIN' );
+INSERT INTO user(username, password, email, join_date, active, role) VALUES ( 'user','$2a$10$z7EinrtlpHpWZ1OlPgLnd.NRFFV81q6.Zm49UkVbFRAhGuyykyYTe','admin@admin.admin',CURRENT_DATE,TRUE,'USER' );
 INSERT INTO post(title, short_description, full_description, create_date, author, imagine_path)
 VALUES ( 'title','t1','t2',CURRENT_DATE,'admin','path');
 INSERT INTO post(title, short_description, full_description, create_date, author, imagine_path)

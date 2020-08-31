@@ -14,6 +14,9 @@ import pl.programmersrest.blog.authentication.controller.request.AuthenticationR
 import pl.programmersrest.blog.authentication.controller.response.AuthenticationTokenResponse;
 import pl.programmersrest.blog.authentication.service.TokenService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 public class AuthenticationController {
     private AuthenticationManager authenticationManager;

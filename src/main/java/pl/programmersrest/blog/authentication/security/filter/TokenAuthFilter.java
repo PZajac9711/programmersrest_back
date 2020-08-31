@@ -3,6 +3,10 @@ package pl.programmersrest.blog.authentication.security.filter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import pl.programmersrest.blog.authentication.models.SecurityToken;
@@ -16,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,30 +29,44 @@ import static pl.programmersrest.blog.authentication.security.jwt.TokenDetails.T
 
 public class TokenAuthFilter extends OncePerRequestFilter {
     private ObjectMapper objectMapper = new ObjectMapper();
-    private TokenUtil tokenUtil = new TokenUtilsImp();
+    private AuthenticationManager authenticationManager;
+
+    public TokenAuthFilter(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authToken = request.getHeader("Authorization");
         if(authToken == null || authToken.equals("")){
-            authorizationHeaderError(response, "authorization header is not present or is empty");
+            authorizationHeaderError(response, "authorization header is not present or is empty",400);
         }
         else{
             if(!authToken.startsWith(TOKEN_PREFIX)){
-                authorizationHeaderError(response, "token not starts with Bearer ");
+                authorizationHeaderError(response, "token not starts with Bearer ",400);
             }
             else{
                 authToken = authToken.substring(TOKEN_PREFIX.length());
-                Claims claims = tokenUtil.getClaimsFromToken(authToken, SECRET_AUTH_TOKEN);
-                String authority = claims.get("authority").toString();
-                SecurityToken securityToken = new SecurityToken(Arrays.asList(() -> authority), claims.getSubject());
-
-                SecurityContextHolder.getContext().setAuthentication(securityToken);
-                filterChain.doFilter(request,response);
+                SecurityToken securityToken = new SecurityToken(Collections.emptyList(), authToken);
+                try{
+                    Authentication authentication = authenticationManager.authenticate(securityToken);
+                    System.out.println(authentication.isAuthenticated());
+                    if(authentication.isAuthenticated()){
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                        filterChain.doFilter(request,response);
+                    }
+                    else{
+                        authorizationHeaderError(response, "Token is not authenticated",401);
+                    }
+                }
+                catch (AuthenticationException ex){
+                    authorizationHeaderError(response, ex.getMessage(), 401);
+                }
             }
         }
     }
-    private void authorizationHeaderError(HttpServletResponse response,String message) throws IOException {
-        response.setStatus(400);
+    private void authorizationHeaderError(HttpServletResponse response,String message, int statusCode) throws IOException {
+        response.setStatus(statusCode);
         response.setContentType("json/text");
         Map<String, String> output = new HashMap<>();
         output.put("message", message);

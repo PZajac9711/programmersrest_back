@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import pl.programmersrest.blog.authentication.security.AuthEntryPoint;
 import pl.programmersrest.blog.authentication.security.filter.TokenAuthFilter;
 
@@ -23,11 +24,14 @@ import pl.programmersrest.blog.authentication.security.filter.TokenAuthFilter;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
     private AuthenticationProvider authenticationProvider;
+    private AuthenticationProvider tokenAuthenticationProvider;
     @Autowired
     public WebSecurityConfig(@Qualifier("userDetailsManager") UserDetailsService userDetailsService,
-                             @Qualifier("credentialsProvider") AuthenticationProvider authenticationProvider) {
+                             @Qualifier("credentialsProvider") AuthenticationProvider authenticationProvider,
+                             @Qualifier("tokenAuthProvider") AuthenticationProvider tokenAuthenticationProvider) {
         this.userDetailsService = userDetailsService;
         this.authenticationProvider = authenticationProvider;
+        this.tokenAuthenticationProvider = tokenAuthenticationProvider;
     }
 
     @Override
@@ -37,7 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authenticationProvider);
+        auth.authenticationProvider(authenticationProvider).authenticationProvider(tokenAuthenticationProvider);
     }
 
     @Bean
@@ -46,23 +50,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManager();
     }
 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/authenticate").permitAll()
-                .antMatchers(HttpMethod.GET,"/posts").permitAll()
-                .antMatchers(HttpMethod.GET,"/posts/{id}").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/posts/{id}").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.POST, "/posts").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/posts/{id}").hasAuthority("ADMIN")
+                .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(new AuthEntryPoint())
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.addFilterBefore(new TokenAuthFilter(), UsernamePasswordAuthenticationFilter.class);
-    }
-
-    @Override
-    public void init(WebSecurity web) throws Exception {
-        super.init(web);
+        http.addFilterBefore(new TokenAuthFilter(authenticationManager()), BasicAuthenticationFilter.class);
     }
 
     @Override
