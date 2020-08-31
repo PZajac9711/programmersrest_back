@@ -4,19 +4,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import pl.programmersrest.blog.authentication.security.AuthEntryPoint;
+import pl.programmersrest.blog.authentication.security.filter.ErrorHandlingFilter;
+import pl.programmersrest.blog.authentication.security.filter.RefreshTokenFilter;
 import pl.programmersrest.blog.authentication.security.filter.TokenAuthFilter;
 
 @Configuration
@@ -25,13 +26,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
     private AuthenticationProvider authenticationProvider;
     private AuthenticationProvider tokenAuthenticationProvider;
+    private AuthenticationProvider refreshTokenAuthenticationProvider;
     @Autowired
     public WebSecurityConfig(@Qualifier("userDetailsManager") UserDetailsService userDetailsService,
                              @Qualifier("credentialsProvider") AuthenticationProvider authenticationProvider,
-                             @Qualifier("tokenAuthProvider") AuthenticationProvider tokenAuthenticationProvider) {
+                             @Qualifier("tokenAuthProvider") AuthenticationProvider tokenAuthenticationProvider,
+                             @Qualifier("refreshAuthProvider") AuthenticationProvider refreshTokenAuthenticationProvider) {
         this.userDetailsService = userDetailsService;
         this.authenticationProvider = authenticationProvider;
         this.tokenAuthenticationProvider = tokenAuthenticationProvider;
+        this.refreshTokenAuthenticationProvider = refreshTokenAuthenticationProvider;
     }
 
     @Override
@@ -41,7 +45,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authenticationProvider).authenticationProvider(tokenAuthenticationProvider);
+        auth.authenticationProvider(authenticationProvider)
+                .authenticationProvider(tokenAuthenticationProvider)
+                .authenticationProvider(refreshTokenAuthenticationProvider);
     }
 
     @Bean
@@ -65,5 +71,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(new TokenAuthFilter(authenticationManager()), BasicAuthenticationFilter.class);
+        http.addFilterBefore(new RefreshTokenFilter(authenticationManager()), BasicAuthenticationFilter.class);
+        http.addFilterBefore(new ErrorHandlingFilter(), TokenAuthFilter.class);
     }
 }

@@ -1,4 +1,4 @@
-package pl.programmersrest.blog.authentication.security;
+package pl.programmersrest.blog.authentication.security.providers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
