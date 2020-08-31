@@ -37,33 +37,7 @@ public class TokenAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authToken = request.getHeader("Authorization");
-        if(authToken == null || authToken.equals("")){
-            authorizationHeaderError(response, "authorization header is not present or is empty",400);
-        }
-        else{
-            if(!authToken.startsWith(TOKEN_PREFIX)){
-                authorizationHeaderError(response, "token not starts with Bearer ",400);
-            }
-            else{
-                authToken = authToken.substring(TOKEN_PREFIX.length());
-                SecurityToken securityToken = new SecurityToken(Collections.emptyList(), authToken);
-                try{
-                    Authentication authentication = authenticationManager.authenticate(securityToken);
-                    System.out.println(authentication.isAuthenticated());
-                    if(authentication.isAuthenticated()){
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                        filterChain.doFilter(request,response);
-                    }
-                    else{
-                        authorizationHeaderError(response, "Token is not authenticated",401);
-                    }
-                }
-                catch (AuthenticationException ex){
-                    authorizationHeaderError(response, ex.getMessage(), 401);
-                }
-            }
-        }
+        filterChain.doFilter(request,response);
     }
     private void authorizationHeaderError(HttpServletResponse response,String message, int statusCode) throws IOException {
         response.setStatus(statusCode);
