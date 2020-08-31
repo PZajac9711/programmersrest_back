@@ -65,7 +65,14 @@ public class TokenAuthFilter extends OncePerRequestFilter {
             }
         }
     }
-    private void authorizationHeaderError(HttpServletResponse response,String message, int statusCode) throws IOException {
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        System.out.println(request.getMethod());
+        return request.getServletPath().equals("/authenticate");
+    }
+
+    private void authorizationHeaderError(HttpServletResponse response, String message, int statusCode) throws IOException {
         response.setStatus(statusCode);
         response.setContentType("json/text");
         Map<String, String> output = new HashMap<>();

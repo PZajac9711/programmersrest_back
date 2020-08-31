@@ -66,12 +66,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(new TokenAuthFilter(authenticationManager()), BasicAuthenticationFilter.class);
     }
-
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring()
-                .antMatchers("/authenticate")
-                .antMatchers(HttpMethod.GET,"/posts")
-                .antMatchers(HttpMethod.GET,"/posts/{id}");
-    }
 }
