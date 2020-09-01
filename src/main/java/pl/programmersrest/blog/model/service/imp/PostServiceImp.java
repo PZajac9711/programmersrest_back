@@ -17,6 +17,7 @@ import pl.programmersrest.blog.model.repository.PostRepository;
 import pl.programmersrest.blog.model.service.PostService;
 
 import java.awt.print.Pageable;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,6 +59,7 @@ public class PostServiceImp implements PostService {
         post.setTitle(updatePostRequest.getTitle());
         post.setShortDescription(updatePostRequest.getShortDescription());
         post.setFullDescription(updatePostRequest.getFullDescription());
+        post.setLastModified(java.time.LocalDateTime.now());
 
         postRepository.save(post);
     }
@@ -70,5 +72,21 @@ public class PostServiceImp implements PostService {
         catch (EmptyResultDataAccessException ex){
             throw new PostNotFoundException("Post Not Found");
         }
+    }
+
+    @Override
+    public void createPost(String username, CreatePostRequest createPostRequest) {
+        if(postRepository.findByTitle(createPostRequest.getTitle()).isPresent()){
+            throw new TitleTakenException("Post with this title already exist");
+        }
+        Post post = Post.builder()
+                .title(createPostRequest.getTitle())
+                .shortDescription(createPostRequest.getShortDescription())
+                .fullDescription(createPostRequest.getFullDescription())
+                .author(username)
+                .createDate(java.time.LocalDateTime.now())
+                .imaginePath(createPostRequest.getImaginePath())
+                .build();
+        postRepository.save(post);
     }
 }

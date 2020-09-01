@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -31,5 +32,24 @@ public class Comment {
     private List<SubComment> subCommentList;
 
     public Comment() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Comment comment = (Comment) o;
+        return Objects.equals(id, comment.id) &&
+                Objects.equals(postId, comment.postId) &&
+                Objects.equals(author, comment.author) &&
+                Objects.equals(description, comment.description) &&
+                Objects.equals(createDate, comment.createDate) &&
+                Objects.equals(score, comment.score) &&
+                Objects.equals(subCommentList, comment.subCommentList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, postId, author, description, createDate, score, subCommentList);
     }
 }

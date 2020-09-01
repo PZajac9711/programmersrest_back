@@ -16,5 +16,5 @@ public interface PostService {
 
     void deletePost(long id);
 
-
+    void createPost(String username, CreatePostRequest createPostRequest);
 }

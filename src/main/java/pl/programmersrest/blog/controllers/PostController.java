@@ -3,6 +3,7 @@ package pl.programmersrest.blog.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.programmersrest.blog.controllers.request.CreatePostRequest;
@@ -51,11 +52,14 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<Void> createNewPost(@RequestBody CreatePostRequest createPostRequest){
-        if (createPostRequest.getFullDescription() == null || createPostRequest.getTitle() == null || createPostRequest.getShortDescription() == null) {
+        if (createPostRequest.getFullDescription() == null
+                || createPostRequest.getTitle() == null
+                || createPostRequest.getShortDescription() == null
+                || createPostRequest.getImaginePath() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        //ToDo: zaimplementowac dopiero jak bedzie juz logowanie i uwierzytelnianie z tokenem
-        //ToDo: dlatego ,ze author bedzie zczytywany z claimow
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        postService.createPost(username, createPostRequest);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
