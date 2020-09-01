@@ -68,7 +68,8 @@ public class TokenAuthFilter extends OncePerRequestFilter {
         return request.getServletPath().equals("/authenticate")
                 || (request.getServletPath().equals("/users") && request.getMethod().equals("POST"))
                 || (request.getServletPath().equals("/posts") && request.getMethod().equals("GET"))
-                || (request.getServletPath().matches("/posts/.{1,4}") && request.getMethod().equals("GET"));
+                || (request.getServletPath().matches("/posts/.{1,4}") && request.getMethod().equals("GET"))
+                || (request.getServletPath().matches("/h2-console/*"));
     }
 
     private void authorizationHeaderError(HttpServletResponse response, String message, int statusCode) throws IOException {

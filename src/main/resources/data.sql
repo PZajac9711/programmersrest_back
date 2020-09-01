@@ -26,23 +26,21 @@ CREATE TABLE post(
 );
 CREATE TABLE comment(
     id INT(6) AUTO_INCREMENT PRIMARY KEY,
-    post_id INT(6) NOT NULL,
+    post_id INT(6),
     author VARCHAR(40),
     description TEXT,
     create_date DATETIME,
     score INT(6) default 0,
     FOREIGN KEY (post_id) REFERENCES post(id)
-        ON UPDATE CASCADE
         ON DELETE CASCADE
 );
 CREATE TABLE subcomment(
     id INT(6) AUTO_INCREMENT PRIMARY KEY,
-    comment_id INT(6) NOT NULL,
+    comment_id INT(6),
     author VARCHAR(40) NOT NULL,
     create_date DATETIME NOT NULL,
     description TEXT,
     FOREIGN KEY (comment_id) REFERENCES comment(id)
-        ON UPDATE CASCADE
         ON DELETE CASCADE
 );
 CREATE TABLE tag(
