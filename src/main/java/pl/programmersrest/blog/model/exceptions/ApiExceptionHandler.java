@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import pl.programmersrest.blog.model.exceptions.custom.PostNotFoundException;
 import pl.programmersrest.blog.model.exceptions.custom.TitleTakenException;
+import pl.programmersrest.blog.model.exceptions.custom.UserRegistrationException;
 
 @ControllerAdvice
 public class ApiExceptionHandler {
@@ -32,6 +33,12 @@ public class ApiExceptionHandler {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST,ex,"User not found");
         return buildApiError(apiError);
     }
+    @ExceptionHandler(UserRegistrationException.class)
+    public ResponseEntity<Object> handleUserRegistrationException(UserRegistrationException ex){
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex, "Error while creating user");
+        return buildApiError(apiError);
+    }
+
 
     private ResponseEntity<Object> buildApiError(ApiError apiError){
         return new ResponseEntity<>(apiError, apiError.getStatusCode());

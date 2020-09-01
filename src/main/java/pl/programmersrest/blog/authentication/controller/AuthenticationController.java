@@ -36,7 +36,7 @@ public class AuthenticationController {
         return new ResponseEntity<>(tokenService.generateResponseToken(authentication), HttpStatus.OK);
     }
     @GetMapping(value = "/authenticate")
-    public ResponseEntity<AuthenticationTokenResponse> refreshToken(@RequestHeader(name = "refresh") String refreshToken){
+    public ResponseEntity<AuthenticationTokenResponse> refreshToken(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication.isAuthenticated()){
             return new ResponseEntity<>(tokenService.generateResponseToken(authentication),HttpStatus.OK);
