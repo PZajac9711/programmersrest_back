@@ -68,11 +68,11 @@ You can use refreshToken only once after refreshing be sure you grab the new ref
 ## Resources
 ### <b>Post</b>
 * <code>GET</code> <a href="/docs/available-post.md">Available Posts</a>
-* <code>GET</code> <a href="#">Single Post</a>
-* <code>POST</code> <a href="#">Create Post</a>
-* <code>PUT</code> <a href="#">Update Post</a>
-* <code>PUT</code> <a href="#">Change Post Status</a>
-* <code>DELETE</code> <a href="#">Delete Post</a>
+* <code>GET</code> <a href="/docs/single-post.md">Single Post</a>
+* <code>POST</code> <a href="/docs/create-post.md">Create Post</a>
+* <code>PUT</code> <a href="/docs/update-post.md">Update Post</a>
+* <code>PUT</code> <a href="/docs/change-status.md">Change Post Status</a>
+* <code>DELETE</code> <a href="/docs/delete-post.md">Delete Post</a>
 
 ### <b>Authentication</b>
 * <code>GET</code> &nbsp;<a href="#">Refresh</a>
