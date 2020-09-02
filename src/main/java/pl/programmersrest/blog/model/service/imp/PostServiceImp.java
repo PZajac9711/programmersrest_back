@@ -44,14 +44,12 @@ public class PostServiceImp implements PostService {
 
     @Override
     public Post getSpecificPost(long id) {
-        return postRepository.findById(id)
-                .orElseThrow(() -> new PostNotFoundException("Post not found"));
+        return getPostById(id);
     }
 
     @Override
     public void updateSpecificPost(long id, UpdatePostRequest updatePostRequest) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new PostNotFoundException("Post Not Found"));
+        Post post = getPostById(id);
 
         if (post.getTitle().equals(updatePostRequest.getTitle())) {
             throw new TitleTakenException("Title is taken");
@@ -88,5 +86,48 @@ public class PostServiceImp implements PostService {
                 .imaginePath(createPostRequest.getImaginePath())
                 .build();
         postRepository.save(post);
+    }
+
+    @Override
+    public void updateTitle(Long id, String title) {
+        Post post = getPostById(id);
+        if(post.getTitle().toLowerCase().equals(title.toLowerCase())){
+            throw new TitleTakenException("Post with this title already exist");
+        }
+        post.setTitle(title);
+        postRepository.save(post);
+    }
+
+    @Override
+    public void updateShortDescription(long id, String shortDescription) {
+        Post post = getPostById(id);
+        post.setShortDescription(shortDescription);
+        postRepository.save(post);
+    }
+
+    @Override
+    public void updateFullDescription(long id, String fullDescription) {
+        Post post = getPostById(id);
+        post.setFullDescription(fullDescription);
+        postRepository.save(post);
+    }
+
+    @Override
+    public void updateImagePath(long id, String imagePath) {
+        Post post = getPostById(id);
+        post.setImaginePath(imagePath);
+        postRepository.save(post);
+    }
+
+    @Override
+    public void changePostStatus(long id) {
+        Post post = getPostById(id);
+        post.setActive(!post.isActive());
+        postRepository.save(post);
+    }
+
+    private Post getPostById(long id){
+        return postRepository.findById(id)
+                .orElseThrow(() -> new PostNotFoundException("Post not found"));
     }
 }

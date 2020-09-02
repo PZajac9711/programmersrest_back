@@ -22,7 +22,8 @@ CREATE TABLE post(
     create_date DATETIME NOT NULL,
     author VARCHAR(40) NOT NULL,
     last_modified DATETIME,
-    imagine_path VARCHAR(1024) NOT NULL
+    imagine_path VARCHAR(1024) NOT NULL,
+    active boolean default false
 );
 CREATE TABLE comment(
     id INT(6) AUTO_INCREMENT PRIMARY KEY,
@@ -56,12 +57,12 @@ CREATE TABLE refresh_token(
 );
 INSERT INTO user(username, password, email, join_date, active, role) VALUES ( 'admin','$2a$10$z7EinrtlpHpWZ1OlPgLnd.NRFFV81q6.Zm49UkVbFRAhGuyykyYTe','admin@admin.admin',CURRENT_DATE,TRUE,'ADMIN' );
 INSERT INTO user(username, password, email, join_date, active, role) VALUES ( 'user','$2a$10$z7EinrtlpHpWZ1OlPgLnd.NRFFV81q6.Zm49UkVbFRAhGuyykyYTe','admin@admin.admin',CURRENT_DATE,TRUE,'USER' );
-INSERT INTO post(title, short_description, full_description, create_date, author, imagine_path)
-VALUES ( 'title','t1','t2',CURRENT_DATE,'admin','path');
+INSERT INTO post(title, short_description, full_description, create_date, author, imagine_path,active)
+VALUES ( 'title','t1','t2',CURRENT_DATE,'admin','path',true);
 INSERT INTO post(title, short_description, full_description, create_date, author, imagine_path)
 VALUES ( 'title2','t1','t2',CURRENT_DATE,'admin','path');
-INSERT INTO post(title, short_description, full_description, create_date, author, imagine_path)
-VALUES ( 'title3','t1','t2',CURRENT_DATE,'admin','path');
+INSERT INTO post(title, short_description, full_description, create_date, author, imagine_path,active)
+VALUES ( 'title3','t1','t2',CURRENT_DATE,'admin','path',true);
 INSERT INTO post(title, short_description, full_description, create_date, author, imagine_path)
 VALUES ( 'title4','t1','t2',CURRENT_DATE,'admin','path');
 INSERT INTO post(title, short_description, full_description, create_date, author, imagine_path)

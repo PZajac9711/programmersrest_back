@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.programmersrest.blog.controllers.request.CreatePostRequest;
 import pl.programmersrest.blog.controllers.request.UpdatePostRequest;
+import pl.programmersrest.blog.controllers.request.UpdateSpecificFieldRequest;
 import pl.programmersrest.blog.controllers.response.PagePost;
 import pl.programmersrest.blog.model.entity.Post;
 import pl.programmersrest.blog.model.service.PostService;
@@ -61,5 +62,47 @@ public class PostController {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         postService.createPost(username, createPostRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PutMapping(value = "{id}/title")
+    public ResponseEntity<Void> updateTitle(@PathVariable Long id, @RequestBody UpdateSpecificFieldRequest title){
+        if(title.getContest() == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        postService.updateTitle(id,title.getContest());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping(value = "{id}/short")
+    public ResponseEntity<Void> updateShortDescription(@PathVariable Long id, @RequestBody UpdateSpecificFieldRequest shortDescription){
+        if(shortDescription.getContest() == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        postService.updateShortDescription(id, shortDescription.getContest());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping(value = "{id}/full")
+    public ResponseEntity<Void> updateFullDescription(@PathVariable Long id, @RequestBody UpdateSpecificFieldRequest fullDescription){
+        if(fullDescription.getContest() == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        postService.updateFullDescription(id, fullDescription.getContest());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping(value = "{id}/image")
+    public ResponseEntity<Void> updateImage(@PathVariable Long id, @RequestBody UpdateSpecificFieldRequest imagePath){
+        if(imagePath.getContest() == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        postService.updateImagePath(id, imagePath.getContest());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping(value = "{id}/status")
+    public ResponseEntity<Void> updateStatus(@PathVariable Long id){
+        postService.changePostStatus(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

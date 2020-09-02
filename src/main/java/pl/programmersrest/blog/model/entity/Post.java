@@ -31,6 +31,7 @@ public class Post {
     private LocalDateTime lastModified;
     @Column(name = "imagine_path")
     private String imaginePath;
+    private boolean active;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL,orphanRemoval = true)
     @JoinColumn(name = "post_id", referencedColumnName = "id")

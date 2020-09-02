@@ -70,6 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.DELETE, "/posts/{id}").hasAuthority("ADMIN")
                 .antMatchers(HttpMethod.POST, "/posts").hasAuthority("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/posts/{id}").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/posts/{id}/*").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(new AuthEntryPoint())

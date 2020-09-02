@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post,Long> {
-    @Query("SELECT p FROM Post p")
+    @Query("SELECT p FROM Post p WHERE p.active = true")
     List<Post> findAllPosts(Pageable pageable);
 
     @Query("SELECT p FROM Post p WHERE LOWER(p.title) = LOWER(?1) ")
