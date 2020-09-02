@@ -9,7 +9,7 @@ Also it takes only post that have set field active to TRUE
 
 | Name | Required | Default | Description | 
 | --- | --- | --- | --- |
-| page | no | 0 | define witch page you wan't to get.Where value 0 represent newest posts, next value takes 4 next posts from database. All values lower than 0 are changed to 0 |
+| page | no | 0 | Define a page that should be returned, where the value 0 means the newest posts. All values lower than 0 are changed to 0 |
 
 
 ## Example 
