@@ -1,6 +1,6 @@
-#ProgrammersRest's
+# ProgrammersRest's
 
-##Overview
+## Overview
 ProgrammersRest is a project that allow you to sending and receiving information <br/>
 between Business logic and Client and manage your blog data in a easy way. All request need to have valid JSON body, response is returned in JSON format.
 <br/>Project provides functionality like:
@@ -11,13 +11,13 @@ between Business logic and Client and manage your blog data in a easy way. All r
 
 And more.
 
-##Tutorial
+## Tutorial
 Below is a video show's basic communication with the API with usage of postman<br/>
 
-##Questions
+## Questions
 All questions send to patzaj9711@gmail.com
 
-##HTTP requests
+## HTTP requests
 All API requests are made by sending a request using one of the following methods, depending on the action being taken:
 
 * POST Create a resource
@@ -27,7 +27,7 @@ All API requests are made by sending a request using one of the following method
 
 For PUT and POST requests the body of your request may include a JSON payload.
 
-##HTTP status
+## HTTP status
 Every response will be returned with one of the following HTTP status codes:
 
 * <code>200</code> - <code>OK</code> The request was successful 
@@ -40,7 +40,7 @@ Every response will be returned with one of the following HTTP status codes:
 * <code>500</code> - <code>Server Error</code> An error on the server occurred
 
 
-##Authentication
+## Authentication
 Access to some endpoints is granted by providing username and password.
 <br/>In case successfully authentication are generated two JWT authentication and refresh
 ```
@@ -65,8 +65,8 @@ Response:
 Token expired after 15 minutes, while refresh token expired after 30 min. <br/>
 You can use refreshToken only once after refreshing be sure you grab the new refreshToken.
 
-##Resources
-###<b>Post</b>
+## Resources
+### <b>Post</b>
 * <code>GET</code> <a href="/docs/available-post.md">Available Posts</a>
 * <code>GET</code> <a href="#">Single Post</a>
 * <code>POST</code> <a href="#">Create Post</a>
@@ -74,10 +74,10 @@ You can use refreshToken only once after refreshing be sure you grab the new ref
 * <code>PUT</code> <a href="#">Change Post Status</a>
 * <code>DELETE</code> <a href="#">Delete Post</a>
 
-###<b>Authentication</b>
+### <b>Authentication</b>
 * <code>GET</code> &nbsp;<a href="#">Refresh</a>
 * <code>POST</code> <a href="#">Authenticate </a>
 
-###Comment
+### Comment
 * <code>GET</code> &nbsp;<a href="#">Refresh</a>
 * <code>POST</code> <a href="#">Authenticate </a>
