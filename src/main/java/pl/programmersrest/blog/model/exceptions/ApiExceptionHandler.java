@@ -46,6 +46,11 @@ public class ApiExceptionHandler {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex, "Error while deleting comment");
         return buildApiError(apiError);
     }
+    @ExceptionHandler(NoAuthException.class)
+    public ResponseEntity<Object> handleNoAuthException(NoAuthException ex){
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, ex, "No permission to do this");
+        return buildApiError(apiError);
+    }
 
     private ResponseEntity<Object> buildApiError(ApiError apiError){
         return new ResponseEntity<>(apiError, apiError.getStatusCode());
