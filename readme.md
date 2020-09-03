@@ -75,9 +75,16 @@ You can use refreshToken only once after refreshing be sure you grab the new ref
 * <code>DELETE</code> <a href="/docs/delete-post.md">Delete Post</a>
 
 ### <b>Authentication</b>
-* <code>GET</code> &nbsp;<a href="#">Refresh</a>
-* <code>POST</code> <a href="#">Authenticate </a>
+* <code>GET</code> &nbsp;<a href="/docs/refresh.md">Refresh</a>
+* <code>POST</code> <a href="/docs/authenticate.md">Authenticate</a>
 
 ### Comment
-* <code>GET</code> &nbsp;<a href="#">Refresh</a>
-* <code>POST</code> <a href="#">Authenticate </a>
+* <code>POST</code> <a href="/docs/create-new-comment.md">Create New Comment </a>
+* <code>POST</code> <a href="/docs/create-new-sub-comment.md">Create New Sub Comment </a>
+* <code>DELETE</code> <a href="/docs/delete-comment.md">Delete Comment</a>
+* <code>DELETE</code> <a href="/docs/delete-sub-comment.md">Delete Sub Comment</a>
+* <code>PUT</code> <a href="/docs/update-comment.md">Update Comment</a>
+* <code>PUT</code> <a href="/docs/update-sub-comment.md">Update Sub Comment</a>
+
+### User
+* <code>POST</code> <a href="/docs/create-new-user.md">Create User</a>
