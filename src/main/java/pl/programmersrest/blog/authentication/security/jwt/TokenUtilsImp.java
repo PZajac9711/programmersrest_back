@@ -3,13 +3,13 @@ package pl.programmersrest.blog.authentication.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
 import java.util.Date;
+
 import static pl.programmersrest.blog.authentication.security.jwt.TokenDetails.*;
 @Component
 public class TokenUtilsImp implements TokenUtil{

@@ -22,6 +22,7 @@ import static pl.programmersrest.blog.authentication.security.jwt.TokenDetails.S
 public class RefreshTokenProvider implements AuthenticationProvider {
     private TokenUtil tokenUtil;
     private RefreshTokenRepository refreshTokenRepository;
+
     @Autowired
     public RefreshTokenProvider(TokenUtil tokenUtil, RefreshTokenRepository refreshTokenRepository) {
         this.tokenUtil = tokenUtil;
@@ -31,23 +32,23 @@ public class RefreshTokenProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String refreshToken = ((RefreshToken) authentication).getToken();
-        try{
+        try {
             Claims claims = tokenUtil.getClaimsFromToken(refreshToken, SECRET_REFRESH_TOKEN);
             Optional<RefreshTokenEntity> refreshTokenEntity = refreshTokenRepository.findRefreshTokenEntitiesByUsername(claims.getSubject());
-            if(!refreshTokenEntity.isPresent()){
+
+            if (!refreshTokenEntity.isPresent()) {
                 throw new BadCredentialsException("No refresh token in database");
             }
-            if(!refreshTokenEntity.get().getToken().equals(refreshToken)){
+            if (!refreshTokenEntity.get().getToken().equals(refreshToken)) {
                 throw new BadCredentialsException("Token is invalid or it been already used");
             }
-            refreshTokenEntity.get().setToken(tokenUtil.generateRefreshToken(claims.getSubject(),claims.get("authority").toString()));
+            refreshTokenEntity.get().setToken(tokenUtil.generateRefreshToken(claims.getSubject(), claims.get("authority").toString()));
             refreshTokenRepository.save(refreshTokenEntity.get());
 
             SecurityToken returnSecurityToken = new SecurityToken(Arrays.asList(() -> claims.get("authority").toString()), claims.getSubject());
             returnSecurityToken.setAuthenticated(true);
             return returnSecurityToken;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw new BadCredentialsException(e.getMessage());
         }
     }

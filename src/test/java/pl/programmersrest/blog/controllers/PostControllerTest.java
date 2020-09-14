@@ -19,6 +19,7 @@ import pl.programmersrest.blog.model.entity.Comment;
 import pl.programmersrest.blog.model.entity.Post;
 import pl.programmersrest.blog.model.exceptions.custom.PostNotFoundException;
 import pl.programmersrest.blog.model.service.PostService;
+import pl.programmersrest.blog.model.service.PostServiceManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +34,10 @@ import static org.springframework.web.servlet.function.RequestPredicates.content
 @RunWith(SpringRunner.class)
 @WebMvcTest(PostController.class)
 public class PostControllerTest {
+    //ToDo: refactor after adding authentication !!!
     ObjectMapper objectMapper = new ObjectMapper();
     @MockBean
-    PostService postService;
+    PostServiceManager postService;
     @Autowired
     MockMvc mockMvc;
 

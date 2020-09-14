@@ -11,6 +11,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.internal.matchers.InstanceOf;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.dao.EmptyResultDataAccessException;
+import pl.programmersrest.blog.controllers.request.CreatePostRequest;
 import pl.programmersrest.blog.controllers.request.UpdatePostRequest;
 import pl.programmersrest.blog.controllers.response.PagePost;
 import pl.programmersrest.blog.model.entity.Comment;
@@ -53,6 +54,7 @@ public class PostServiceImpTest {
                         .imaginePath("path")
                         .fullDescription("full")
                         .shortDescription("short")
+                        .active(true)
                         .id(1L)
                         .lastModified(java.time.LocalDateTime.now())
                         .build()
@@ -96,12 +98,12 @@ public class PostServiceImpTest {
         Post post = postService.getSpecificPost(id);
         //then
         verify(postRepository, times(1)).findById(id);
-        assertEquals(post,postList.get(0));
+        assertEquals(post, postList.get(0));
         assertNotNull(post);
     }
 
     @Test(expected = PostNotFoundException.class)
-    public void failGetSpecificPostTestShouldThrowPostNotFoundException(){
+    public void failGetSpecificPostTestShouldThrowPostNotFoundException() {
         //given
         long id = 1;
         //when
@@ -113,14 +115,14 @@ public class PostServiceImpTest {
     }
 
     @Test
-    public void updateSpecificPost(){
+    public void updateSpecificPost() {
         //given
         ArgumentCaptor<Post> captor = ArgumentCaptor.forClass(Post.class);
         long id = 1;
-        UpdatePostRequest updatePostRequest = new UpdatePostRequest("title","shortDescription","fullDesc");
+        UpdatePostRequest updatePostRequest = new UpdatePostRequest("title", "shortDescription", "fullDesc");
         //when
         when(postRepository.findById(id)).thenReturn(Optional.of(postList.get(0)));
-        postService.updateSpecificPost(id,updatePostRequest);
+        postService.updateSpecificPost(id, updatePostRequest);
         //then
         verify(postRepository).save(captor.capture());
         assertEquals(captor.getValue().getTitle(), updatePostRequest.getTitle());
@@ -129,31 +131,31 @@ public class PostServiceImpTest {
     }
 
     @Test(expected = PostNotFoundException.class)
-    public void updateSpecificPostTestFailPostNotExist(){
+    public void updateSpecificPostTestFailPostNotExist() {
         //given
         long id = 1;
-        UpdatePostRequest updatePostRequest = new UpdatePostRequest("title","shortDescription","fullDesc");
+        UpdatePostRequest updatePostRequest = new UpdatePostRequest("title", "shortDescription", "fullDesc");
         //when
         when(postRepository.findById(id)).thenThrow(new PostNotFoundException("Post not found"));
-        postService.updateSpecificPost(id,updatePostRequest);
+        postService.updateSpecificPost(id, updatePostRequest);
         //then
-        verify(postRepository,times(0)).save(any());
+        verify(postRepository, times(0)).save(any());
     }
 
     @Test(expected = TitleTakenException.class)
-    public void updateSpecificPostTestFailTitleTakenException(){
+    public void updateSpecificPostTestFailTitleTakenException() {
         //given
         long id = 1;
-        UpdatePostRequest updatePostRequest = new UpdatePostRequest("title1","shortDescription","fullDesc");
+        UpdatePostRequest updatePostRequest = new UpdatePostRequest("title1", "shortDescription", "fullDesc");
         //when
         when(postRepository.findById(id)).thenReturn(Optional.of(postList.get(0)));
-        postService.updateSpecificPost(id,updatePostRequest);
+        postService.updateSpecificPost(id, updatePostRequest);
         //then
-        verify(postRepository,times(0)).save(any());
+        verify(postRepository, times(0)).save(any());
     }
 
     @Test
-    public void deletePostTest(){
+    public void deletePostTest() {
         //given
         long id = 1;
         //when
@@ -163,11 +165,77 @@ public class PostServiceImpTest {
     }
 
     @Test(expected = PostNotFoundException.class)
-    public void deletePostTestFailShouldThrowPostNotFoundException(){
+    public void deletePostTestFailShouldThrowPostNotFoundException() {
         //given
         long id = 1;
         //when
         doThrow(new EmptyResultDataAccessException(1)).when(postRepository).deleteById(id);
         postService.deletePost(1);
+    }
+
+    @Test(expected = TitleTakenException.class)
+    public void createPostTestFailShouldThrowTitleTakenException() {
+        //given
+        String username = "admin";
+        CreatePostRequest createPostRequest = CreatePostRequest.builder()
+                .fullDescription("full")
+                .title("title1")
+                .imaginePath("path")
+                .shortDescription("short")
+                .build();
+        //when
+        when(postRepository.findByTitle(createPostRequest.getTitle())).thenReturn(Optional.of(postList.get(0)));
+        postService.createPost(username, createPostRequest);
+        //
+        verify(postRepository, times(0)).save(any());
+    }
+
+    @Test
+    public void createPostTestSuccessfully() {
+        //given
+        ArgumentCaptor<Post> captor = ArgumentCaptor.forClass(Post.class);
+        String username = "admin";
+        CreatePostRequest createPostRequest = CreatePostRequest.builder()
+                .fullDescription("full")
+                .title("title2")
+                .imaginePath("path")
+                .shortDescription("short")
+                .build();
+        //when
+        when(postRepository.findByTitle(createPostRequest.getTitle())).thenReturn(Optional.empty());
+        postService.createPost(username, createPostRequest);
+        //then
+        verify(postRepository).save(captor.capture());
+        verify(postRepository, times(1)).save(any());
+        assertEquals(createPostRequest.getTitle(), captor.getValue().getTitle());
+        assertEquals(createPostRequest.getFullDescription(), captor.getValue().getFullDescription());
+        assertEquals(createPostRequest.getImaginePath(), captor.getValue().getImaginePath());
+        assertEquals(createPostRequest.getShortDescription(), captor.getValue().getShortDescription());
+    }
+
+    @Test
+    public void changePostStatusTestSuccessfully() {
+        //given
+        long postId = 1;
+        //when
+        when(postRepository.findById(postId)).thenReturn(Optional.of(postList.get(0)));
+        boolean statusBeforeChange = postList.get(0).isActive();
+        postService.changePostStatus(1);
+        //then
+        ArgumentCaptor<Post> captor = ArgumentCaptor.forClass(Post.class);
+        verify(postRepository).save(captor.capture());
+        assertTrue(captor.getValue().isActive() != statusBeforeChange);
+        verify(postRepository, times(1)).save(any());
+    }
+
+    @Test(expected = PostNotFoundException.class)
+    public void changePostStatusShouldThrownPostNotFoundException() {
+        //given
+        long postId = 1;
+        //when
+        when(postRepository.findById(postId)).thenReturn(Optional.empty());
+        postService.changePostStatus(postId);
+        //then
+        verify(postRepository, times(0)).save(any());
     }
 }

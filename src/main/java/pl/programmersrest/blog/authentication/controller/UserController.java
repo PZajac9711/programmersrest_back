@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.programmersrest.blog.authentication.controller.request.CreateNewUserRequest;
 import pl.programmersrest.blog.authentication.models.CreateNewUserWrapper;
-import pl.programmersrest.blog.model.enums.AuthorityEnum;
 
 @RestController
 @RequestMapping(value = "/users")
@@ -23,7 +22,7 @@ public class UserController {
         this.userDetailsManager = userDetailsManager;
     }
 
-    //post - create user
+    //ToDo: \/
     //get/{username} - get a specific user
     //put/{username} - update password
     //delete/{username} - delete user

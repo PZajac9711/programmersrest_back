@@ -38,12 +38,14 @@ public class SubCommentServiceImp implements SubCommentService {
     public void deleteSubComment(long postId, long commentId, long subCommentId, String username, AuthorityEnum authority) {
         Comment comment = getCommentFromDatabase(postId, commentId);
         SubComment subComment = getSubCommentFromComment(comment, subCommentId);
+        username = username.toLowerCase();
+
         if (authority.equals(ADMIN)) {
             comment.getSubCommentList().remove(subComment);
             commentRepository.save(comment);
             return;
         }
-        if(!username.equals(subComment.getAuthor())){
+        if(!username.equals(subComment.getAuthor().toLowerCase())){
             throw new NoAuthException("It's not your comment, you cant delete it");
         }
         comment.getSubCommentList().remove(subComment);
@@ -54,7 +56,7 @@ public class SubCommentServiceImp implements SubCommentService {
     public void updateSubComment(long postId, long commentId, long subCommentId, String username, String contest) {
         Comment comment = getCommentFromDatabase(postId,commentId);
         SubComment subComment = getSubCommentFromComment(comment, subCommentId);
-        if(!subComment.getAuthor().equals(username)){
+        if(!subComment.getAuthor().toLowerCase().equals(username.toLowerCase())){
             throw new NoAuthException("It's not your comment, you cant update it");
         }
         subComment.setDescription(contest);

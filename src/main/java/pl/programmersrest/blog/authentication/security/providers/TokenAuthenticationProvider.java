@@ -6,10 +6,8 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import pl.programmersrest.blog.authentication.models.SecurityToken;
-import pl.programmersrest.blog.authentication.security.jwt.TokenDetails;
 import pl.programmersrest.blog.authentication.security.jwt.TokenUtil;
 
 import java.util.Arrays;
@@ -32,7 +30,6 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
             Claims claims = tokenUtil.getClaimsFromToken(securityToken, SECRET_AUTH_TOKEN);
             SecurityToken returnSecurityToken = new SecurityToken(Arrays.asList(() -> claims.get("authority").toString()), claims.getSubject());
             returnSecurityToken.setAuthenticated(true);
-            System.out.println(returnSecurityToken.isAuthenticated());
             return returnSecurityToken;
         }
         catch (Exception e){

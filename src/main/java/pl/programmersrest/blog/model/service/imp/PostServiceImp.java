@@ -5,7 +5,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import pl.programmersrest.blog.controllers.request.CreatePostRequest;
 import pl.programmersrest.blog.controllers.request.UpdatePostRequest;
 import pl.programmersrest.blog.controllers.response.PagePost;
@@ -14,15 +13,12 @@ import pl.programmersrest.blog.model.exceptions.custom.PostNotFoundException;
 import pl.programmersrest.blog.model.exceptions.custom.TitleTakenException;
 import pl.programmersrest.blog.model.mapper.Mapper;
 import pl.programmersrest.blog.model.repository.PostRepository;
-import pl.programmersrest.blog.model.service.PostService;
+import pl.programmersrest.blog.model.service.PostServiceManager;
 
-import java.awt.print.Pageable;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
-public class PostServiceImp implements PostService {
+public class PostServiceImp implements PostServiceManager {
     private final int POST_ON_SINGLE_PAGE = 4;
     private PostRepository postRepository;
     private Mapper<List<Post>, List<PagePost>> postListToPagePostList;
@@ -85,37 +81,6 @@ public class PostServiceImp implements PostService {
                 .createDate(java.time.LocalDateTime.now())
                 .imaginePath(createPostRequest.getImaginePath())
                 .build();
-        postRepository.save(post);
-    }
-
-    @Override
-    public void updateTitle(Long id, String title) {
-        Post post = getPostById(id);
-        if(post.getTitle().toLowerCase().equals(title.toLowerCase())){
-            throw new TitleTakenException("Post with this title already exist");
-        }
-        post.setTitle(title);
-        postRepository.save(post);
-    }
-
-    @Override
-    public void updateShortDescription(long id, String shortDescription) {
-        Post post = getPostById(id);
-        post.setShortDescription(shortDescription);
-        postRepository.save(post);
-    }
-
-    @Override
-    public void updateFullDescription(long id, String fullDescription) {
-        Post post = getPostById(id);
-        post.setFullDescription(fullDescription);
-        postRepository.save(post);
-    }
-
-    @Override
-    public void updateImagePath(long id, String imagePath) {
-        Post post = getPostById(id);
-        post.setImaginePath(imagePath);
         postRepository.save(post);
     }
 
