@@ -152,4 +152,5 @@ public class SubCommentServiceImpTest {
         when(commentRepository.findCommentByPostIdAndId(postId,commentId)).thenReturn(Optional.of(comment));
         subCommentServiceImp.deleteSubComment(postId,commentId,subCommentId,"admin", authorityEnum);
     }
+
 }

@@ -3,22 +3,23 @@ package pl.programmersrest.blog.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MockMvcBuilder;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import pl.programmersrest.blog.controllers.request.UpdatePostRequest;
 import pl.programmersrest.blog.controllers.response.PagePost;
 import pl.programmersrest.blog.model.entity.Comment;
 import pl.programmersrest.blog.model.entity.Post;
 import pl.programmersrest.blog.model.exceptions.custom.PostNotFoundException;
-import pl.programmersrest.blog.model.service.PostService;
 import pl.programmersrest.blog.model.service.PostServiceManager;
 
 import java.util.ArrayList;
@@ -29,23 +30,29 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.web.servlet.function.RequestPredicates.contentType;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(PostController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class PostControllerTest {
     //ToDo: refactor after adding authentication !!!
     ObjectMapper objectMapper = new ObjectMapper();
+
     @MockBean
     PostServiceManager postService;
+
+    private MockMvc mockMvc;
+
     @Autowired
-    MockMvc mockMvc;
+    private WebApplicationContext webApplicationContext;
+
 
     private List<PagePost> pagePostList;
     private Post post;
 
     @Before
     public void setUp() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         post = Post.builder()
                 .title("title1")
                 .createDate(java.time.LocalDateTime.now())
