@@ -3,22 +3,24 @@ package pl.programmersrest.blog.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+
+import org.junit.jupiter.api.Nested;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+import pl.programmersrest.blog.authentication.security.jwt.TokenDetails;
+import pl.programmersrest.blog.authentication.security.jwt.TokenUtil;
 import pl.programmersrest.blog.controllers.request.UpdatePostRequest;
 import pl.programmersrest.blog.controllers.response.PagePost;
 import pl.programmersrest.blog.model.entity.Comment;
 import pl.programmersrest.blog.model.entity.Post;
+import pl.programmersrest.blog.model.enums.AuthorityEnum;
 import pl.programmersrest.blog.model.exceptions.custom.PostNotFoundException;
 import pl.programmersrest.blog.model.service.PostServiceManager;
 
@@ -36,23 +38,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class PostControllerTest {
     //ToDo: refactor after adding authentication !!!
+    //ToDo: Fix issue with Nested class (test were not found) :(
     ObjectMapper objectMapper = new ObjectMapper();
-
     @MockBean
     PostServiceManager postService;
 
-    private MockMvc mockMvc;
-
     @Autowired
-    private WebApplicationContext webApplicationContext;
-
+    private MockMvc mockMvc;
+    @Autowired
+    TokenUtil tokenUtil;
 
     private List<PagePost> pagePostList;
     private Post post;
 
     @Before
     public void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         post = Post.builder()
                 .title("title1")
                 .createDate(java.time.LocalDateTime.now())
@@ -64,9 +64,7 @@ public class PostControllerTest {
                 .id(1L)
                 .lastModified(java.time.LocalDateTime.now())
                 .build();
-
         //********************************************************//
-
         pagePostList = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
             pagePostList.add(
@@ -83,7 +81,7 @@ public class PostControllerTest {
     }
 
     @Test
-    public void getPostsTest() throws Exception {
+    public void getPostsTestShouldBeSuccessfully() throws Exception {
         //given
         String page = "2";
         //when
@@ -98,7 +96,7 @@ public class PostControllerTest {
     }
 
     @Test
-    public void getSpecificPostTest() throws Exception {
+    public void getSpecificPostTestShouldBeSuccessfully() throws Exception {
         //given
         long id = 1;
         //when
@@ -114,7 +112,7 @@ public class PostControllerTest {
     }
 
     @Test
-    public void failGetSpecificPostTest() throws Exception {
+    public void getSpecificPostTestShouldReturnBadRequestNoPostWithThisId() throws Exception {
         //given
         long id = 1;
         //when
@@ -129,13 +127,16 @@ public class PostControllerTest {
     }
 
     @Test
-    public void updatePostTest() throws Exception {
+    public void updatePostTestShouldBeSuccessfully() throws Exception {
         //given
+        String jwtForAdmin = TokenDetails.TOKEN_PREFIX + tokenUtil.generateAuthToken("admin", AuthorityEnum.ADMIN.getAuthority());
         long id = 1;
         UpdatePostRequest updatePostRequest = new UpdatePostRequest("title", "short", "full");
-        //when
+
         doNothing().when(postService).updateSpecificPost(id, updatePostRequest);
+        //when
         mockMvc.perform(put("/posts/" + id)
+                .header("authorization", jwtForAdmin)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatePostRequest)))
                 .andExpect(status().isOk())
@@ -145,28 +146,52 @@ public class PostControllerTest {
     }
 
     @Test
-    public void updatePostTestEmptyTitleShouldReturnStatusCodeBadRequest() throws Exception{
+    public void updatePostTestEmptyTitleShouldReturnStatusCodeBadRequest() throws Exception {
         //given
         long id = 1;
         UpdatePostRequest updatePostRequest = new UpdatePostRequest(null, "short", "full");
-        //when
+        String jwtForAdmin = TokenDetails.TOKEN_PREFIX + tokenUtil.generateAuthToken("admin", AuthorityEnum.ADMIN.getAuthority());
+
         doNothing().when(postService).updateSpecificPost(id, updatePostRequest);
+        //when
         mockMvc.perform(put("/posts/" + id)
                 .contentType(MediaType.APPLICATION_JSON)
+                .header("authorization", jwtForAdmin)
                 .content(objectMapper.writeValueAsString(updatePostRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$").doesNotExist());
         //then
-        verify(postService, times(0)).updateSpecificPost(id,updatePostRequest);
+        verify(postService, times(0)).updateSpecificPost(id, updatePostRequest);
     }
 
     @Test
-    public void deleteSpecificPostTest() throws Exception {
+    public void updatePostShouldFailWithForbiddenStatus() throws Exception {
         //given
         long id = 1;
+        String userToken = tokenUtil.generateAuthToken("admin", AuthorityEnum.USER.getAuthority());
+        UpdatePostRequest updatePostRequest = new UpdatePostRequest("new", "short", "full");
+
+        doNothing().when(postService).updateSpecificPost(id, updatePostRequest);
+        //when
+        mockMvc.perform(put("/posts/" + id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("authorization", TokenDetails.TOKEN_PREFIX + userToken)
+                .content(objectMapper.writeValueAsString(updatePostRequest)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$").doesNotExist());
+        //then
+        verify(postService, times(0)).updateSpecificPost(id, updatePostRequest);
+    }
+
+    @Test
+    public void deleteSpecificPostTestShouldBeSuccessfully() throws Exception {
+        //given
+        long id = 1;
+        String adminToken = tokenUtil.generateAuthToken("admin", AuthorityEnum.ADMIN.getAuthority());
         //when
         doNothing().when(postService).deletePost(id);
-        mockMvc.perform(delete("/posts/" + id))
+        mockMvc.perform(delete("/posts/" + id)
+                .header("authorization", TokenDetails.TOKEN_PREFIX + adminToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").doesNotExist());
         //then
@@ -177,8 +202,11 @@ public class PostControllerTest {
     public void deleteSpecificPostTestFailShouldThrowPostNotFoundException() throws Exception {
         //given
         long id = 1;
+        String adminToken = tokenUtil.generateAuthToken("admin", AuthorityEnum.ADMIN.getAuthority());
         doThrow(new PostNotFoundException("Post not found")).when(postService).deletePost(id);
-        mockMvc.perform(delete("/posts/" + id))
+
+        mockMvc.perform(delete("/posts/" + id)
+                .header("authorization", TokenDetails.TOKEN_PREFIX + adminToken))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.message").value("There's no post with this id"))
@@ -186,4 +214,20 @@ public class PostControllerTest {
         //then
         verify(postService, times(1)).deletePost(id);
     }
+
+    @Test
+    public void deleteSpecificPostTestFailNoAuthShouldReturnForbiddenStatus() throws Exception {
+        //given
+        long id = 1;
+        String userToken = tokenUtil.generateAuthToken("user", AuthorityEnum.USER.getAuthority());
+        doNothing().when(postService).deletePost(id);
+        //when
+        mockMvc.perform(delete("/posts/" + id)
+                .header("authorization", TokenDetails.TOKEN_PREFIX + userToken))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$").doesNotExist());
+        //then
+        verify(postService, times(0)).deletePost(id);
+    }
+
 }

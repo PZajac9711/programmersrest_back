@@ -6,9 +6,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.internal.matchers.CapturesArguments;
 import org.mockito.junit.MockitoJUnitRunner;
 import pl.programmersrest.blog.model.entity.Comment;
 import pl.programmersrest.blog.model.entity.SubComment;
@@ -33,7 +35,7 @@ public class SubCommentServiceImpTest {
     private Comment comment;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         comment = Comment.builder()
                 .createDate(java.time.LocalDateTime.now())
                 .author("janek")
@@ -64,19 +66,19 @@ public class SubCommentServiceImpTest {
         int expectedSizeAfter = subCommentSizeBefore + 1;
         //when
         when(commentRepository.findCommentByPostIdAndId(postId, commentId)).thenReturn(Optional.of(comment));
-        subCommentServiceImp.addNewSubComment(postId,commentId,username,contents);
+        subCommentServiceImp.addNewSubComment(postId, commentId, username, contents);
         //then
-        verify(commentRepository,times(1)).save(any());
+        verify(commentRepository, times(1)).save(any());
         assertEquals(comment.getSubCommentList().size(), expectedSizeAfter);
     }
 
     @Test(expected = CommentNotFoundException.class)
-    public void addNewSubCommentShouldThrowCommentNotFoundException(){
+    public void addNewSubCommentShouldThrowCommentNotFoundException() {
         //given
         long postId = -1;
         int expectedListSize = comment.getSubCommentList().size();
         //when
-        when(commentRepository.findCommentByPostIdAndId(postId,1L)).thenReturn(Optional.empty());
+        when(commentRepository.findCommentByPostIdAndId(postId, 1L)).thenReturn(Optional.empty());
         subCommentServiceImp.addNewSubComment(postId, 1L, "", "");
         //then
         verify(commentRepository, times(0)).save(any());
@@ -84,7 +86,7 @@ public class SubCommentServiceImpTest {
     }
 
     @Test
-    public void deleteSubCommentTestShouldBeSuccessfully(){
+    public void deleteSubCommentTestShouldBeSuccessfully() {
         //given
         AuthorityEnum authorityEnum = AuthorityEnum.valueOf("ADMIN");
         long postId = 1;
@@ -92,15 +94,15 @@ public class SubCommentServiceImpTest {
         long subCommentId = 1;
         int sizeBeforeDelete = comment.getSubCommentList().size();
         //when
-        when(commentRepository.findCommentByPostIdAndId(postId,commentId)).thenReturn(Optional.of(comment));
-        subCommentServiceImp.deleteSubComment(postId,commentId,subCommentId,"admin", authorityEnum);
+        when(commentRepository.findCommentByPostIdAndId(postId, commentId)).thenReturn(Optional.of(comment));
+        subCommentServiceImp.deleteSubComment(postId, commentId, subCommentId, "admin", authorityEnum);
         //then
         verify(commentRepository, times(1)).save(comment);
         assertEquals(sizeBeforeDelete - 1, comment.getSubCommentList().size());
     }
 
     @Test
-    public void deleteSubCommentTestShouldBeSuccessfullyNormalUser(){
+    public void deleteSubCommentTestShouldBeSuccessfullyNormalUser() {
         //ToDo: refactor this test to parametrized
         //given
         AuthorityEnum authorityEnum = AuthorityEnum.valueOf("USER");
@@ -109,27 +111,27 @@ public class SubCommentServiceImpTest {
         long subCommentId = 1;
         int sizeBeforeDelete = comment.getSubCommentList().size();
         //when
-        when(commentRepository.findCommentByPostIdAndId(postId,commentId)).thenReturn(Optional.of(comment));
-        subCommentServiceImp.deleteSubComment(postId,commentId,subCommentId,"JaNeK", authorityEnum);
+        when(commentRepository.findCommentByPostIdAndId(postId, commentId)).thenReturn(Optional.of(comment));
+        subCommentServiceImp.deleteSubComment(postId, commentId, subCommentId, "JaNeK", authorityEnum);
         //then
         verify(commentRepository, times(1)).save(comment);
         assertEquals(sizeBeforeDelete - 1, comment.getSubCommentList().size());
     }
 
     @Test(expected = NoAuthException.class)
-    public void deleteSubCommentTestShouldThrowNoAuthExceptionWrongUser(){
+    public void deleteSubCommentTestShouldThrowNoAuthExceptionWrongUser() {
         //given
         AuthorityEnum authorityEnum = AuthorityEnum.valueOf("USER");
         long postId = 1;
         long commentId = 1;
         long subCommentId = 1;
         //when
-        when(commentRepository.findCommentByPostIdAndId(postId,commentId)).thenReturn(Optional.of(comment));
-        subCommentServiceImp.deleteSubComment(postId,commentId,subCommentId,"admin", authorityEnum);
+        when(commentRepository.findCommentByPostIdAndId(postId, commentId)).thenReturn(Optional.of(comment));
+        subCommentServiceImp.deleteSubComment(postId, commentId, subCommentId, "admin", authorityEnum);
     }
 
     @Test(expected = CommentNotFoundException.class)
-    public void deleteSubCommentTestShouldThrowCommentNotFoundException(){
+    public void deleteSubCommentTestShouldThrowCommentNotFoundException() {
         //ToDo: refactor this test to parametrized
         //given
         AuthorityEnum authorityEnum = AuthorityEnum.valueOf("USER");
@@ -137,20 +139,55 @@ public class SubCommentServiceImpTest {
         long commentId = 1;
         long subCommentId = 1;
         //when
-        when(commentRepository.findCommentByPostIdAndId(postId,commentId)).thenReturn(Optional.empty());
-        subCommentServiceImp.deleteSubComment(postId,commentId,subCommentId,"admin", authorityEnum);
+        when(commentRepository.findCommentByPostIdAndId(postId, commentId)).thenReturn(Optional.empty());
+        subCommentServiceImp.deleteSubComment(postId, commentId, subCommentId, "admin", authorityEnum);
     }
 
     @Test(expected = CommentNotFoundException.class)
-    public void deleteSubCommentTestShouldThrowCommentNotFoundExceptionNoSubCommentWithThisId(){
+    public void deleteSubCommentTestShouldThrowCommentNotFoundExceptionNoSubCommentWithThisId() {
         //given
         AuthorityEnum authorityEnum = AuthorityEnum.valueOf("USER");
         long postId = 1;
         long commentId = 1;
         long subCommentId = -1;
         //when
-        when(commentRepository.findCommentByPostIdAndId(postId,commentId)).thenReturn(Optional.of(comment));
-        subCommentServiceImp.deleteSubComment(postId,commentId,subCommentId,"admin", authorityEnum);
+        when(commentRepository.findCommentByPostIdAndId(postId, commentId)).thenReturn(Optional.of(comment));
+        subCommentServiceImp.deleteSubComment(postId, commentId, subCommentId, "admin", authorityEnum);
     }
 
+    @Test
+    public void updateSubCommentTestShouldBeSuccessfully() {
+        //given
+        ArgumentCaptor<Comment> captor = ArgumentCaptor.forClass(Comment.class);
+        String username = "janek";
+        String expectedString = "hello update here :)";
+        long postId = 1;
+        long commentId = 1;
+        long subCommentId = 1;
+
+        when(commentRepository.findCommentByPostIdAndId(postId, commentId)).thenReturn(Optional.of(comment));
+        //when
+        subCommentServiceImp.updateSubComment(postId, commentId, subCommentId, username, expectedString);
+        //then
+        verify(commentRepository, times(1)).save(captor.capture());
+        assertEquals(captor.getValue().getSubCommentList().get(0).getDescription(), expectedString);
+    }
+
+    @Test(expected = NoAuthException.class)
+    public void updateSubCommentTestShouldThrowNoAuthException() {
+        //given
+        ArgumentCaptor<Comment> captor = ArgumentCaptor.forClass(Comment.class);
+        String username = "adas";
+        String expectedString = comment.getSubCommentList().get(0).getDescription();
+        long postId = 1;
+        long commentId = 1;
+        long subCommentId = 1;
+
+        when(commentRepository.findCommentByPostIdAndId(postId, commentId)).thenReturn(Optional.of(comment));
+        //when
+        subCommentServiceImp.updateSubComment(postId, commentId, subCommentId, username, "Random String");
+        //then
+        verify(commentRepository, times(0)).save(captor.capture());
+        assertEquals(captor.getValue().getSubCommentList().get(0).getDescription(), expectedString);
+    }
 }

@@ -36,7 +36,7 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
         }
         String refreshToken = request.getHeader("refresh");
         if(!refreshToken.startsWith(TOKEN_PREFIX)){
-            generateException(response, 400, "Token didn't start with "+TOKEN_PREFIX);
+            generateException(response, 400, "Token didn't start with " + TOKEN_PREFIX);
             return;
         }
         try{
@@ -52,7 +52,7 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return !(request.getServletPath().equals("/authenticate") && request.getMethod().equals("GET"));
+        return !(request.getRequestURI().equals("/authenticate") && request.getMethod().equals("GET"));
     }
 
     private void generateException(HttpServletResponse response, int status, String message) throws IOException {
