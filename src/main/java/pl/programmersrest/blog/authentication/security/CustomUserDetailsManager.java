@@ -1,38 +1,41 @@
 package pl.programmersrest.blog.authentication.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Component;
-import pl.programmersrest.blog.authentication.controller.request.CreateNewUserRequest;
 import pl.programmersrest.blog.authentication.models.CreateNewUserWrapper;
 import pl.programmersrest.blog.authentication.models.SecurityUser;
+import pl.programmersrest.blog.authentication.util.UserCredentialsValidator;
 import pl.programmersrest.blog.model.entity.User;
 import pl.programmersrest.blog.model.enums.AuthorityEnum;
 import pl.programmersrest.blog.model.exceptions.custom.UserRegistrationException;
 import pl.programmersrest.blog.model.repository.UserRepository;
 
 import java.sql.Date;
-import java.util.regex.Pattern;
 
 @Component(value = "userDetailsManager")
 public class CustomUserDetailsManager implements UserDetailsManager {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
+    private UserCredentialsValidator userCredentialsValidator;
 
     @Autowired
-    public CustomUserDetailsManager(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public CustomUserDetailsManager(UserRepository userRepository, PasswordEncoder passwordEncoder, UserCredentialsValidator userCredentialsValidator) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userCredentialsValidator = userCredentialsValidator;
     }
 
     @Override
     public void createUser(UserDetails userDetails) {
         CreateNewUserWrapper details = (CreateNewUserWrapper) userDetails;
         String email = details.getCreateNewUserRequest().getEmail();
-        checkAllPatterns(details.getCreateNewUserRequest());
+        userCredentialsValidator.checkAllPatterns(details.getCreateNewUserRequest());
 
         if(userExists(details.getUsername())){
             throw new UserRegistrationException("User already exists");
@@ -63,7 +66,21 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 
     @Override
     public void changePassword(String oldPassword, String newPassword) {
+        //ToDo: Should we check if old and new password are the same ??, it's stupid but why user can't do this.
+        String username = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
 
+        User user = ((SecurityUser) loadUserByUsername(username)).getUser();
+        if(passwordEncoder.matches(oldPassword, user.getPassword())){
+            user.setPassword(passwordEncoder.encode(newPassword));
+        }
+        else{
+            throw new BadCredentialsException("Wrong password");
+        }
+
+        userRepository.save(user);
     }
 
     @Override
@@ -76,33 +93,5 @@ public class CustomUserDetailsManager implements UserDetailsManager {
         User user = userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return new SecurityUser(user);
-    }
-
-    private boolean checkAllPatterns(CreateNewUserRequest userRegistrationRequest) {
-        return checkEmailPattern(userRegistrationRequest.getEmail())
-                && checkLoginPattern(userRegistrationRequest.getUsername())
-                && checkPasswordPattern(userRegistrationRequest.getPassword());
-    }
-
-    private boolean checkLoginPattern(String login) {
-        String regex = "^[a-zA-Z0-9]{3,}$";
-        Pattern pattern = Pattern.compile(regex);
-        if (!pattern.matcher(login).matches()) {
-            throw new UserRegistrationException("Wrong login");
-        }
-        return true;
-    }
-
-    private boolean checkPasswordPattern(String password) {
-        return true;
-    }
-
-    private boolean checkEmailPattern(String email) {
-        String regex = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
-        Pattern pattern = Pattern.compile(regex);
-        if (!pattern.matcher(email).matches()) {
-            throw new UserRegistrationException("Wrong email");
-        }
-        return true;
     }
 }

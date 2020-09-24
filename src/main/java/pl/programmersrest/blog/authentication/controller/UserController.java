@@ -5,10 +5,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.provisioning.UserDetailsManager;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import pl.programmersrest.blog.authentication.controller.request.ChangePasswordRequest;
 import pl.programmersrest.blog.authentication.controller.request.CreateNewUserRequest;
 import pl.programmersrest.blog.authentication.models.CreateNewUserWrapper;
 
@@ -33,5 +31,16 @@ public class UserController {
         }
         userDetailsManager.createUser(new CreateNewUserWrapper(userDetails));
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+    @PutMapping(value = "change-password")
+    public ResponseEntity<Void> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest){
+        if(changePasswordRequest.getNewPassword() == null || changePasswordRequest.getOldPassword() == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        String oldPassword = changePasswordRequest.getOldPassword();
+        String newPassword = changePasswordRequest.getNewPassword();
+        userDetailsManager.changePassword(oldPassword,newPassword);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

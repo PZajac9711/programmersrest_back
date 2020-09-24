@@ -59,6 +59,18 @@ public class ApiExceptionHandler {
         return buildApiError(apiError);
     }
 
+    @ExceptionHandler(TagNotFoundException.class)
+    public ResponseEntity<Object> handleTagNotFoundException(TagNotFoundException ex){
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex, "Bad Name");
+        return buildApiError(apiError);
+    }
+
+    @ExceptionHandler(TagException.class)
+    public ResponseEntity<Object> handleTagException(TagException ex){
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex, "Problem with execute your request");
+        return buildApiError(apiError);
+    }
+
     private ResponseEntity<Object> buildApiError(ApiError apiError){
         return new ResponseEntity<>(apiError, apiError.getStatusCode());
     }

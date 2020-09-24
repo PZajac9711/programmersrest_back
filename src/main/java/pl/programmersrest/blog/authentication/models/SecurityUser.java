@@ -19,6 +19,10 @@ public class SecurityUser implements UserDetails {
         return Arrays.asList(() -> user.getRole().getAuthority());
     }
 
+    public User getUser() {
+        return user;
+    }
+
     @Override
     public String getPassword() {
         return user.getPassword();
