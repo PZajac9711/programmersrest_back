@@ -37,7 +37,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class PostControllerTest {
-    //ToDo: refactor after adding authentication !!!
     //ToDo: Fix issue with Nested class (test were not found) :(
     ObjectMapper objectMapper = new ObjectMapper();
     @MockBean
@@ -104,9 +103,9 @@ public class PostControllerTest {
         mockMvc.perform(get("/posts/" + id))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
-                .andExpect(jsonPath("$.author").value(post.getAuthor()))
-                .andExpect(jsonPath("$.title").value(post.getTitle()))
-                .andExpect(jsonPath("$.id").value(post.getId()));
+                .andExpect(jsonPath("$.post.author").value(post.getAuthor()))
+                .andExpect(jsonPath("$.post.title").value(post.getTitle()))
+                .andExpect(jsonPath("$.post.id").value(post.getId()));
         //then
         verify(postService, times(1)).getSpecificPost(id);
     }

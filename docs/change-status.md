@@ -1,5 +1,6 @@
 # Change Post Status
-    PUT posts/{id}/status
+    Method: PUT
+    Endpoint: posts/{id}/status
 
 Change Post status, if status is true while we calling this endpoint it will change it to false.It works in two ways. only user with ADMIN authority can reach this endpoint.
 
@@ -25,3 +26,12 @@ http://localhost:8080/posts/1/status
 ```
 Status: 200 OK
 ```
+## Exceptions
+* Returns 400 when:
+    * Post not exists
+    * Token is not present
+    * Token didnt start with Bearer 
+
+
+* Returns 403 when:
+    * User who dont have ADMIN Authority try to change post status  

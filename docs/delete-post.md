@@ -1,5 +1,6 @@
 # Change Post Status
-    DELETE posts/{id}
+    Method: DELETE
+    Endpoint: /posts/{id}
 
 Permanently delete post from database. only user with ADMIN authority can reach this endpoint.
 
@@ -25,3 +26,16 @@ http://localhost:8080/posts/1
 ```
 Status: 200 OK
 ```
+##Exceptions
+* Returns 400 when:
+    * Token is not present
+    * Token didnt start's with Bearer 
+    * Post not exists
+    
+   
+* Returns 403 when:
+    * User who are not a Admin trying to delete post.
+
+
+* Returns 401 when:
+     * Token is invalid

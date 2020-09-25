@@ -4,14 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import pl.programmersrest.blog.controllers.request.AssignTagRequest;
 import pl.programmersrest.blog.controllers.request.CreatePostRequest;
 import pl.programmersrest.blog.controllers.request.UpdatePostRequest;
-import pl.programmersrest.blog.controllers.request.UpdateSpecificFieldRequest;
 import pl.programmersrest.blog.controllers.response.PagePost;
+import pl.programmersrest.blog.controllers.response.PostWrapper;
 import pl.programmersrest.blog.model.entity.Post;
+import pl.programmersrest.blog.model.entity.TagDetails;
 import pl.programmersrest.blog.model.service.PostServiceManager;
+import pl.programmersrest.blog.model.service.TagService;
 
 import java.util.List;
 
@@ -19,10 +21,12 @@ import java.util.List;
 @RequestMapping(value = "posts")
 public class PostController {
     private PostServiceManager postServiceManager;
+    private TagService tagService;
 
     @Autowired
-    public PostController(PostServiceManager postServiceManager) {
+    public PostController(PostServiceManager postServiceManager, TagService tagService) {
         this.postServiceManager = postServiceManager;
+        this.tagService = tagService;
     }
 
     @GetMapping
@@ -32,8 +36,10 @@ public class PostController {
     }
 
     @GetMapping(value = "{id}")
-    public Post getSpecificPost(@PathVariable long id) {
-        return postServiceManager.getSpecificPost(id);
+    public PostWrapper getSpecificPost(@PathVariable long id) {
+        Post post = postServiceManager.getSpecificPost(id);
+        List<TagDetails> tagDetailsList = tagService.loadTagsForPost(post.getId());
+        return new PostWrapper(post,tagDetailsList);
     }
 
     @PutMapping(value = "{id}")
@@ -67,6 +73,12 @@ public class PostController {
     @PutMapping(value = "{id}/status")
     public ResponseEntity<Void> updateStatus(@PathVariable Long id){
         postServiceManager.changePostStatus(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(value = "{id}/tags")
+    public ResponseEntity<Void> addTagToPost(@PathVariable long id, @RequestBody AssignTagRequest assignTagRequest){
+        tagService.assignTagToPost(id, assignTagRequest.getName());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

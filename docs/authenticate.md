@@ -1,5 +1,6 @@
 # Authenticate
-    POST authenticate
+    Method: POST
+    Endpoint: /authenticate
 
 Generate two Tokens, one for authenticate user and another of refreshing authentication.
 Authentication token expired after 15 min, after this time you can refresh token in next 15 min using refresh token
@@ -17,7 +18,6 @@ see <a href=refresh.md>Refresh</a>
 {
     "username": "defines username",
     "password": "defines user password",
-   
 }
 ```
 ## Example 

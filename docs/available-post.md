@@ -1,5 +1,6 @@
 # Available Posts
-    GET posts?page
+    Method: GET
+    Endpoint: /posts
 
 Return list of posts, list can be empty if there's no post for specific page, otherwise return list between range 1-4 where 4 is a max posts on a single page.
 Also it takes only post that have set field active to TRUE

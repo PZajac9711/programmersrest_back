@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface TagService {
     List<TagDetails> loadTagsForPost(long id);
+    void assignTagToPost(long id, String s);
 }

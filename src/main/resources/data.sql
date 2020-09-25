@@ -58,8 +58,10 @@ CREATE TABLE tag(
     id int(6) AUTO_INCREMENT PRIMARY KEY ,
     tag_id int(6),
     post_id int(6),
-    FOREIGN KEY (post_id) REFERENCES post(id),
+    FOREIGN KEY (post_id) REFERENCES post(id)
+                ON DELETE CASCADE ,
     FOREIGN KEY (tag_id) REFERENCES tag_details(id)
+                ON DELETE CASCADE
 );
 INSERT INTO user(username, password, email, join_date, active, role) VALUES ( 'admin','$2a$10$z7EinrtlpHpWZ1OlPgLnd.NRFFV81q6.Zm49UkVbFRAhGuyykyYTe','admin@admin.admin',CURRENT_DATE,TRUE,'ADMIN' );
 INSERT INTO user(username, password, email, join_date, active, role) VALUES ( 'user','$2a$10$z7EinrtlpHpWZ1OlPgLnd.NRFFV81q6.Zm49UkVbFRAhGuyykyYTe','admin@admin.admin',CURRENT_DATE,TRUE,'USER' );

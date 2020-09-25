@@ -19,6 +19,7 @@ public class PagePost {
     private String author;
     private String shortDescription;
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

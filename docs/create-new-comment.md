@@ -1,10 +1,15 @@
 # Create New Comment
-    POST comments
+    Method: Post
+    Endpoint: /posts/{id}/comments
 
 Add new comment if posts exists, otherwise it return PostNotFoundException.
 Only users with valid token can reach this endpoint.
-
 ## Parameters
+<b>URI Parameter</b>
+
+| Name | Required | Default | Description | 
+| --- | --- | --- | --- |
+| id | yes | no | defines post to which comment should be added
 <b>Headers</b>
 
 | Name | Required | Default | Description | 
@@ -33,3 +38,11 @@ Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGhvcml0eSI6IkFETUlOIiwiaWF0
 ```
 Status: 201 created
 ```
+## Exceptions
+* Returns 401 when Token expired or is invalid
+
+
+* Returns 400 when:
+    * Token is not present
+    * Token didn't start with Bearer 
+    * Post which this id not exists

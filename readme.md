@@ -51,9 +51,7 @@ Response:
     "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGhvcml0eSI6IkFETUlOIiwiaWF0IjoxNTk5MDU0MzAyLCJleHAiOjE1OTkwNTUyMDJ9.C_EeiJdA-8dhVtmoIubBr67uzjfo5Kn5sxFwqjrQemA",
     "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGhvcml0eSI6IkFETUlOIiwiaWF0IjoxNTk5MDU0MzAyLCJleHAiOjE1OTkwNTYxMDJ9.TUgz2i0PsLgDVLka2EzK9Sx-BB9EZd_ldd5-vIfMLt4"
 ```
-After successfully token is required to authenticate user privilege and refreshToken is used to generate new authentication credentials without passing username and password
-<br/>
-Refresh token example:
+Refresh token example
 ```
 Endpoint: GET http://localhost:8080/authenticate
 Request:

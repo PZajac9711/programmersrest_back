@@ -2,7 +2,6 @@ package pl.programmersrest.blog.model.service.imp;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.programmersrest.blog.model.entity.Tag;
 import pl.programmersrest.blog.model.entity.TagDetails;
 import pl.programmersrest.blog.model.exceptions.custom.TagException;
 import pl.programmersrest.blog.model.exceptions.custom.TagNotFoundException;
@@ -78,5 +77,13 @@ public class TagDetailsManagerImp implements TagDetailsManager {
     @Override
     public boolean tagExist(String name) {
         return tagRepository.findTagByName(name).isPresent();
+    }
+
+    @Override
+    public void deleteTag(String name) throws TagNotFoundException {
+        TagDetails tag = loadTagByName(name.toUpperCase())
+                .orElseThrow(() -> new TagNotFoundException("There's no tag with this name"));
+
+        tagRepository.delete(tag);
     }
 }

@@ -1,10 +1,18 @@
 # Create New Sub Comment
-    POST sub-comments
-
+    Method: POST
+    Endpoint: /posts/{post-id}/comments/{comment-id}/sub-comments
+    
 Add new sub comment if comment exist and belong to specific post, otherwise it return PostNotFoundException or CommentNotFoundException.
 Only users with valid token can reach this endpoint.
 
 ## Parameters
+<b>URI Parameter</b>
+
+| Name | Required | Default | Description | 
+| --- | --- | --- | --- |
+| post-id | yes | no | defines post
+| comment-id | yes | no | defines comment to which sub comment should be add
+
 <b>Headers</b>
 
 | Name | Required | Default | Description | 
@@ -33,3 +41,11 @@ Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGhvcml0eSI6IkFETUlOIiwiaWF0
 ```
 Status: 201 created
 ```
+## Exceptions
+* Returns 401 when Token expired or is invalid
+
+
+* Returns 400 when:
+    * Token is not present
+    * Token didn't start with Bearer 
+    * Post or comment which this id not exists

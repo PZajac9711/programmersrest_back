@@ -1,5 +1,6 @@
-# Delete Comment
-    DELETE comments
+# Delete Sub Comment
+    Method: DELETE
+    Endpoint: /posts/{post-id}/comments/{comment-id}/sub-comments/{sub-id}
 
 Delete sub-comment from database if exist,it can throw CommentNotFoundException in case if comment not exist or it not belong to this specific post.
 Only users with active token can reach this endpoint.
@@ -8,6 +9,13 @@ If user that trying to delete sub-comment are not a original author it will retu
 <b>Note: ADMIN can delete all comments</b>
 
 ## Parameters
+<b>URI Parameter</b>
+
+| Name | Required | Default | Description | 
+| --- | --- | --- | --- |
+| post-id | yes | no | defines post
+| comment-id | yes | no | defines comment
+| sub-id | yes | no | defines sub comment which should be deleted
 <b>Headers</b>
 
 | Name | Required | Default | Description | 
@@ -24,3 +32,16 @@ Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGhvcml0eSI6IkFETUlOIiwiaWF0
 ```
 Status: 200 OK
 ```
+##Exceptions
+* Returns 400 when:
+    * Token is not present
+    * Token didnt start's with Bearer 
+    * Post not exists
+    
+   
+* Returns 403 when:
+    * User who are not a owner of comment trying to delete it.(ADMIN can delete all comments)
+
+
+* Returns 401 when:
+     * Token is invalid

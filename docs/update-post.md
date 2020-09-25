@@ -1,9 +1,16 @@
 # Update Post
-    PUT posts/{id}
+    Method: PUT
+    Endpoints: /posts/{id}
 
 Update post, only user with ADMIN authority can reach this endpoint.
 
 ## Parameters
+<b>URI Parameter</b>
+
+| Name | Required | Default | Description | 
+| --- | --- | --- | --- |
+| id | yes | no | defines which post should be update
+
 <b>Headers</b>
 
 | Name | Required | Default | Description | 
@@ -39,3 +46,17 @@ Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGhvcml0eSI6IkFETUlOIiwiaWF0
 ```
 Status: 200 ok
 ```
+##Exceptions
+* Returns 400 when:
+    * Post which this Title already exists
+    * title,shortDescription,fullDescription or imaginePath are null
+    * Token is not present
+    * Token didn't start with Bearer
+    * Post which this id not exists
+    
+* Returns 403 when:
+    * User which are not have ADMIN Authority try to update post
+    
+    
+* Returns 401 when:
+     * Token is invalid

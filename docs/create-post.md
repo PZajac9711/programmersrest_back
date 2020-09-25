@@ -1,5 +1,6 @@
 # Create Post
-    POST posts
+    Method: POST
+    Endpoint: /posts
 
 Add new Post to database, only user with ADMIN authority can reach this endpoint.
 
@@ -38,3 +39,17 @@ Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGhvcml0eSI6IkFETUlOIiwiaWF0
 ```
 Status: 201 created
 ```
+##Exceptions
+* Returns 400 when:
+    * Post which this Title already exists
+    * title,shortDescription,fullDescription or imaginePath are null
+    * Token is not present
+    * Token didn't start with Bearer
+    
+    
+* Returns 403 when:
+    * User which are not have ADMIN Authority try to create new post
+    
+    
+* Returns 401 when:
+     * Token is invalid
