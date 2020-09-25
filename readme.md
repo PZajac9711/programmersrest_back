@@ -71,6 +71,8 @@ You can use refreshToken only once after refreshing be sure you grab the new ref
 * <code>PUT</code> <a href="/docs/update-post.md">Update Post</a>
 * <code>PUT</code> <a href="/docs/change-status.md">Change Post Status</a>
 * <code>DELETE</code> <a href="/docs/delete-post.md">Delete Post</a>
+* <code>POST</code> <a href="/docs/delete-post.md">Assign Tag</a>
+* <code>DELETE</code> <a href="/docs/delete-post.md">Remove Tag</a>
 
 ### <b>Authentication</b>
 * <code>GET</code> &nbsp;<a href="/docs/refresh.md">Refresh</a>
@@ -86,3 +88,10 @@ You can use refreshToken only once after refreshing be sure you grab the new ref
 
 ### User
 * <code>POST</code> <a href="/docs/create-new-user.md">Create User</a>
+* <code>PUT</code> <a href="/docs/change-password.md">Change Password</a>
+
+### Tag
+* <code>POST</code> <a href="/docs/create-new-tag.md">Create New Tag</a>
+* <code>GET</code> <a href="/docs/get-all-tags.md">Get All Available Tags</a>
+* <code>PUT</code> <a href="/docs/update-tag-name.md">Update Tag Name</a>
+* <code>DELETE</code> <a href="/docs/delete-tag.md">Delete Tag</a>

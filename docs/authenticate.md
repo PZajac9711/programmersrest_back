@@ -12,6 +12,7 @@ see <a href=refresh.md>Refresh</a>
 | Name | Required | Default | Description | 
 | --- | --- | --- | --- |
 | Authorization | yes| no | Header should contain authorization token generated previous by server, it need to start with Bearer , dont forget about space after Bearer|
+
 <b>Request Body</b>
 <br/>If any of these parameters are equal null, it will return 400 Bad Request.
 ```
