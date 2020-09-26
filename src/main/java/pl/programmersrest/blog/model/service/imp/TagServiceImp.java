@@ -8,11 +8,12 @@ import pl.programmersrest.blog.model.exceptions.custom.TagNotFoundException;
 import pl.programmersrest.blog.model.repository.TagRepository;
 import pl.programmersrest.blog.model.service.TagDetailsManager;
 import pl.programmersrest.blog.model.service.TagService;
+import pl.programmersrest.blog.model.service.TagServiceManager;
 
 import java.util.List;
 
 @Service
-public class TagServiceImp implements TagService {
+public class TagServiceImp implements TagServiceManager {
     private TagRepository tagRepository;
     private TagDetailsManager tagDetailsManager;
 

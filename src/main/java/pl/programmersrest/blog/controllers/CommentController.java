@@ -10,6 +10,9 @@ import pl.programmersrest.blog.controllers.request.CommentRequest;
 import pl.programmersrest.blog.model.enums.AuthorityEnum;
 import pl.programmersrest.blog.model.service.CommentService;
 
+/**
+ * @author Patryk Zając
+ */
 @RestController
 public class CommentController {
     private CommentService commentService;
@@ -19,6 +22,13 @@ public class CommentController {
         this.commentService = commentService;
     }
 
+    /**
+     *
+     * @param id describe post to which we add a comment
+     * @param commentRequest object represent new comment
+     * @return status code 201 if all were successfully
+     * @see CommentService
+     */
     @PostMapping(value = "/posts/{id}/comments")
     public ResponseEntity<Void> addComment(@PathVariable Long id, @RequestBody CommentRequest commentRequest) {
         if (commentRequest.getContents() == null) {

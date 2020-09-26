@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"pl.programmersrest.blog.authentication.security.jwt"},{"l":"pl.programmersrest.blog.authentication.service"},{"l":"pl.programmersrest.blog.authentication.util.interfaces"},{"l":"pl.programmersrest.blog.model.enums"},{"l":"pl.programmersrest.blog.model.service"}]

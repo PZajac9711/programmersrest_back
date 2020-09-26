@@ -14,6 +14,7 @@ import pl.programmersrest.blog.model.entity.Post;
 import pl.programmersrest.blog.model.entity.TagDetails;
 import pl.programmersrest.blog.model.service.PostServiceManager;
 import pl.programmersrest.blog.model.service.TagService;
+import pl.programmersrest.blog.model.service.TagServiceManager;
 
 import java.util.List;
 
@@ -21,12 +22,12 @@ import java.util.List;
 @RequestMapping(value = "posts")
 public class PostController {
     private PostServiceManager postServiceManager;
-    private TagService tagService;
+    private TagServiceManager tagServiceManager;
 
     @Autowired
-    public PostController(PostServiceManager postServiceManager, TagService tagService) {
+    public PostController(PostServiceManager postServiceManager, TagServiceManager tagServiceManager) {
         this.postServiceManager = postServiceManager;
-        this.tagService = tagService;
+        this.tagServiceManager = tagServiceManager;
     }
 
     @GetMapping
@@ -38,7 +39,7 @@ public class PostController {
     @GetMapping(value = "{id}")
     public PostWrapper getSpecificPost(@PathVariable long id) {
         Post post = postServiceManager.getSpecificPost(id);
-        List<TagDetails> tagDetailsList = tagService.loadTagsForPost(post.getId());
+        List<TagDetails> tagDetailsList = tagServiceManager.loadTagsForPost(post.getId());
         return new PostWrapper(post,tagDetailsList);
     }
 
@@ -78,7 +79,7 @@ public class PostController {
 
     @PostMapping(value = "{id}/tags")
     public ResponseEntity<Void> addTagToPost(@PathVariable long id, @RequestBody AssignTagRequest assignTagRequest){
-        tagService.assignTagToPost(id, assignTagRequest.getName());
+        tagServiceManager.assignTagToPost(id, assignTagRequest.getName());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -48,7 +48,7 @@ public class TagDetailsManagerImp implements TagDetailsManager {
     }
 
     @Override
-    public void updateTagName(String oldName, String newName) throws TagException {
+    public void updateTagName(String oldName, String newName){
         TagDetails tag = loadTagByName(oldName)
                 .orElseThrow(() -> new TagNotFoundException("There's no tag with this name"));
 
@@ -61,7 +61,7 @@ public class TagDetailsManagerImp implements TagDetailsManager {
     }
 
     @Override
-    public void createNewTag(String name) throws TagException {
+    public void createNewTag(String name){
         if (tagExist(name)) {
             throw new TagException("This tag already exist");
         }
