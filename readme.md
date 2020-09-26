@@ -65,33 +65,33 @@ You can use refreshToken only once after refreshing be sure you grab the new ref
 
 ## Resources
 ### <b>Post</b>
-* <code>GET</code> <a href="/docs/available-post.md">Available Posts</a>
-* <code>GET</code> <a href="/docs/single-post.md">Single Post</a>
-* <code>POST</code> <a href="/docs/create-post.md">Create Post</a>
-* <code>PUT</code> <a href="/docs/update-post.md">Update Post</a>
-* <code>PUT</code> <a href="/docs/change-status.md">Change Post Status</a>
-* <code>DELETE</code> <a href="/docs/delete-post.md">Delete Post</a>
-* <code>POST</code> <a href="/docs/delete-post.md">Assign Tag</a>
-* <code>DELETE</code> <a href="/docs/delete-post.md">Remove Tag</a>
+* <code>GET</code> <a href="/docs/readme-doc/available-post.md">Available Posts</a>
+* <code>GET</code> <a href="/docs/readme-doc/single-post.md">Single Post</a>
+* <code>POST</code> <a href="/docs/readme-doc/create-post.md">Create Post</a>
+* <code>PUT</code> <a href="/docs/readme-doc/update-post.md">Update Post</a>
+* <code>PUT</code> <a href="/docs/readme-doc/change-status.md">Change Post Status</a>
+* <code>DELETE</code> <a href="/docs/readme-doc/delete-post.md">Delete Post</a>
+* <code>POST</code> <a href="/docs/readme-doc/delete-post.md">Assign Tag</a>
+* <code>DELETE</code> <a href="/docs/readme-doc/delete-post.md">Remove Tag</a>
 
 ### <b>Authentication</b>
-* <code>GET</code> &nbsp;<a href="/docs/refresh.md">Refresh</a>
-* <code>POST</code> <a href="/docs/authenticate.md">Authenticate</a>
+* <code>GET</code> &nbsp;<a href="/docs/readme-doc/refresh.md">Refresh</a>
+* <code>POST</code> <a href="/docs/readme-doc/authenticate.md">Authenticate</a>
 
 ### Comment
-* <code>POST</code> <a href="/docs/create-new-comment.md">Create New Comment </a>
-* <code>POST</code> <a href="/docs/create-new-sub-comment.md">Create New Sub Comment </a>
-* <code>DELETE</code> <a href="/docs/delete-comment.md">Delete Comment</a>
-* <code>DELETE</code> <a href="/docs/delete-sub-comment.md">Delete Sub Comment</a>
-* <code>PUT</code> <a href="/docs/update-comment.md">Update Comment</a>
-* <code>PUT</code> <a href="/docs/update-sub-comment.md">Update Sub Comment</a>
+* <code>POST</code> <a href="/docs/readme-doc/create-new-comment.md">Create New Comment </a>
+* <code>POST</code> <a href="/docs/readme-doc/create-new-sub-comment.md">Create New Sub Comment </a>
+* <code>DELETE</code> <a href="/docs/readme-doc/delete-comment.md">Delete Comment</a>
+* <code>DELETE</code> <a href="/docs/readme-doc/delete-sub-comment.md">Delete Sub Comment</a>
+* <code>PUT</code> <a href="/docs/readme-doc/update-comment.md">Update Comment</a>
+* <code>PUT</code> <a href="/docs/readme-doc/update-sub-comment.md">Update Sub Comment</a>
 
 ### User
-* <code>POST</code> <a href="/docs/create-new-user.md">Create User</a>
-* <code>PUT</code> <a href="/docs/change-password.md">Change Password</a>
+* <code>POST</code> <a href="/docs/readme-doc/create-new-user.md">Create User</a>
+* <code>PUT</code> <a href="/docs/readme-doc/change-password.md">Change Password</a>
 
 ### Tag
-* <code>POST</code> <a href="/docs/create-new-tag.md">Create New Tag</a>
-* <code>GET</code> <a href="/docs/get-all-tags.md">Get All Available Tags</a>
-* <code>PUT</code> <a href="/docs/update-tag-name.md">Update Tag Name</a>
-* <code>DELETE</code> <a href="/docs/delete-tag.md">Delete Tag</a>
+* <code>POST</code> <a href="/docs/readme-doc/create-new-tag.md">Create New Tag</a>
+* <code>GET</code> <a href="/docs/readme-doc/get-all-tags.md">Get All Available Tags</a>
+* <code>PUT</code> <a href="/docs/readme-doc/update-tag-name.md">Update Tag Name</a>
+* <code>DELETE</code> <a href="/docs/readme-doc/delete-tag.md">Delete Tag</a>
