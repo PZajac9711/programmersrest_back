@@ -74,8 +74,7 @@ You can use refreshToken only once after refreshing be sure you grab the new ref
 * <code>PUT</code> <a href="/docs/readme-doc/update-post.md">Update Post</a>
 * <code>PUT</code> <a href="/docs/readme-doc/change-status.md">Change Post Status</a>
 * <code>DELETE</code> <a href="/docs/readme-doc/delete-post.md">Delete Post</a>
-* <code>POST</code> <a href="/docs/readme-doc/delete-post.md">Assign Tag</a>
-* <code>DELETE</code> <a href="/docs/readme-doc/delete-post.md">Remove Tag</a>
+* <code>POST</code> <a href="/docs/readme-doc/assign-tag.md">Assign Tag</a>
 
 ### <b>Authentication</b>
 * <code>GET</code> &nbsp;<a href="/docs/readme-doc/refresh.md">Refresh</a>

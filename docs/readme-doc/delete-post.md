@@ -1,4 +1,4 @@
-# Change Post Status
+# Delete Post
     Method: DELETE
     Endpoint: /posts/{id}
 
